@@ -27,7 +27,7 @@ export default function History() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex h-full bg-gray-100 dark:bg-gray-900">
       <Sidebar />
       <div className="flex-1 p-4 md:ml-64">
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Order History</h1>
@@ -44,7 +44,7 @@ export default function History() {
                 <ul className="space-y-4">
                   {order.items.map((item, index) => (
                     <li key={index} className="border-b pb-2 text-blue-950">
-                      {item.name} - {item.quantity}
+                      {item.product} - {item.quantity}
                     </li>
                   ))}
                 </ul>
