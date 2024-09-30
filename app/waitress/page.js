@@ -6,6 +6,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import Image from "next/image";
 
 import Pizza from '../images/pizza.jpg';
+import Burger from '../images/burger.jpg';
 
 // Initial product data
 const products = [
@@ -18,7 +19,7 @@ const products = [
   {
     id: 2,
     name: 'Burger',
-    image: '/burger.jpg',
+    image: Burger,
     price: 9.99,
   },
 ];
@@ -81,20 +82,22 @@ export default function Waitress() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Take Order</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => {
           const orderItem = order.find(item => item.id === product.id);
           const quantity = orderItem ? orderItem.quantity : 0;
 
           return (
             <div key={product.id} className="card p-4 border rounded-md shadow-md">
+              <div className="w-full h-40">
               <Image
                 src={product.image} 
                 alt={product.name} 
                 width={400} 
                 height={160} 
-                className="w-full h-40 object-cover mb-2" 
+                className="w-full h-full object-cover mb-2" 
               />
+              </div>
               <h2 className="text-xl font-semibold">{product.name}</h2>
               <p className="text-lg">Price: ${product.price.toFixed(2)}</p>
 
