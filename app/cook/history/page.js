@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect } from "react"
-import { db } from "@/firebase"
-import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore'
-import Sidebar from "../_components/Sidebar"
-
+import { useState, useEffect } from "react";
+import { db } from "@/firebase";
+import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import Sidebar from "../_components/Sidebar";
 export default function History() {
-  const [completedOrders, setCompletedOrders] = useState([])
+  const [completedOrders, setCompletedOrders] = useState([]);
 
   useEffect(() => {
     const q = query(
@@ -34,25 +33,18 @@ export default function History() {
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Order History</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {completedOrders.map((order) => (
-            <div key={order.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-              <div className="bg-green-600 text-white p-4">
+            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-blue-600 text-white p-4">
                 <h2 className="text-xl font-semibold">Order #{order.id.slice(-4)}</h2>
-                <p className="text-sm">Completed: {new Date(order.createdAt.toDate()).toLocaleString()}</p>
+                <p className="text-sm">Status: {order.status}</p>
+                <p className="text-sm">{new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Items:</h3>
+                <h3 className="text-lg font-semibold mb-2 text-blue-900">Items:</h3>
                 <ul className="space-y-4">
                   {order.items.map((item, index) => (
-                    <li key={index} className="border-b pb-2 text-gray-700 dark:text-gray-300">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">{item.product}</span>
-                        <span>Qty: {item.quantity}</span>
-                      </div>
-                      {item.customization && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          Customization: {item.customization}
-                        </p>
-                      )}
+                    <li key={index} className="border-b pb-2 text-blue-950">
+                      {item.name} - {item.quantity}
                     </li>
                   ))}
                 </ul>
@@ -62,5 +54,5 @@ export default function History() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -7,6 +7,8 @@ import Sidebar from "./_components/Sidebar"
 
 export default function Cook() {
   const [orders, setOrders] = useState([])
+  const [completedOrders, setCompletedOrders] = useState([]);
+
 
   useEffect(() => {
     const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
@@ -15,13 +17,17 @@ export default function Cook() {
         id: doc.id,
         ...doc.data()
       }));
-      setOrders(newOrders);
-    });
 
+      const activeOrders = newOrders.filter(order => order.status !== 'completed');
+      const completedOrders = newOrders.filter(order => order.status === 'completed');
+
+      setOrders(activeOrders);
+      setCompletedOrders(completedOrders);
+    });
     return () => {
-      unsubscribe();
-    };
-  }, []);
+        unsubscribe();
+      };
+    }, []);
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
