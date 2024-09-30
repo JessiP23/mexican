@@ -24,37 +24,53 @@ const products = [
 ];
 
 export default function Waitress() {
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [customization, setCustomization] = useState('');
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [isCustomizing, setIsCustomizing] = useState(false);
+  const [order, setOrder] = useState([]);
+  const [customization, setCustomization] = useState({});
+  const [isCustomizing, setIsCustomizing] = useState(null);
 
-  // Function to handle quantity changes and update total price
-  const handleQuantityChange = (type, price) => {
-    setQuantity((prev) => {
-      const newQuantity = type === 'increment' ? prev + 1 : prev > 1 ? prev - 1 : prev;
-      setTotalPrice(newQuantity * price);
-      return newQuantity;
+  // Function to handle quantity changes
+  const handleQuantityChange = (productId, type) => {
+    setOrder(prevOrder => {
+      const existingItem = prevOrder.find(item => item.id === productId);
+      if (existingItem) {
+        return prevOrder.map(item => 
+          item.id === productId 
+            ? { ...item, quantity: type === 'increment' ? item.quantity + 1 : Math.max(0, item.quantity - 1) }
+            : item
+        ).filter(item => item.quantity > 0);
+      } else {
+        const product = products.find(p => p.id === productId);
+        return [...prevOrder, { ...product, quantity: 1 }];
+      }
     });
   };
 
+  // Function to handle customization
+  const handleCustomization = (productId, value) => {
+    setCustomization(prev => ({ ...prev, [productId]: value }));
+  };
+
+  // Calculate total price of the order
+  const totalPrice = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   // Function to send order to Firebase
-  const sendOrder = async (product) => {
+  const sendOrder = async () => {
     try {
       await addDoc(collection(db, 'orders'), {
-        product: product.name,
-        customization,
-        quantity,
+        items: order.map(item => ({
+          product: item.name,
+          customization: customization[item.id] || '',
+          quantity: item.quantity,
+          price: item.price * item.quantity,
+        })),
         totalPrice,
         status: 'pending',
         createdAt: new Date(),
       });
-      setQuantity(1);
-      setCustomization('');
-      setTotalPrice(0);
-      setIsCustomizing(false);
-      alert('Order sent!');
+      setOrder([]);
+      setCustomization({});
+      setIsCustomizing(null);
+      alert('Order sent to the cook!');
     } catch (e) {
       console.error('Error adding document: ', e);
       alert('An error occurred, please try again later.');
@@ -66,70 +82,87 @@ export default function Waitress() {
       <h1 className="text-2xl font-bold mb-4">Take Order</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {products.map((product) => (
-          <div key={product.id} className="card p-4 border rounded-md shadow-md">
-            <Image
-              src={product.image} 
-              alt={product.name} 
-              width={400} 
-              height={160} 
-              className="w-full h-40 object-cover mb-2" 
-            />
-            <h2 className="text-xl font-semibold">{product.name}</h2>
-            <p className="text-lg">Price: ${product.price.toFixed(2)}</p>
+        {products.map((product) => {
+          const orderItem = order.find(item => item.id === product.id);
+          const quantity = orderItem ? orderItem.quantity : 0;
 
-            {/* Quantity Control */}
-            <div className="flex items-center justify-between my-2">
-              <button
-                onClick={() => handleQuantityChange('decrement', product.price)}
-                className="px-3 py-1 bg-red-500 text-white rounded"
-              >
-                -
-              </button>
-              <span>{quantity}</span>
-              <button
-                onClick={() => handleQuantityChange('increment', product.price)}
-                className="px-3 py-1 bg-green-500 text-white rounded"
-              >
-                +
-              </button>
-            </div>
+          return (
+            <div key={product.id} className="card p-4 border rounded-md shadow-md">
+              <Image
+                src={product.image} 
+                alt={product.name} 
+                width={400} 
+                height={160} 
+                className="w-full h-40 object-cover mb-2" 
+              />
+              <h2 className="text-xl font-semibold">{product.name}</h2>
+              <p className="text-lg">Price: ${product.price.toFixed(2)}</p>
 
-            {/* Show Total Price */}
-            <p className="text-lg">Total: ${(quantity * product.price).toFixed(2)}</p>
-
-            {/* Customize Button */}
-            <button
-              onClick={() => {
-                setSelectedProduct(product);
-                setIsCustomizing(true);
-                setTotalPrice(product.price * quantity); // Set the initial total price
-              }}
-              className="w-full bg-blue-500 text-white py-2 mt-2 rounded"
-            >
-              Customize
-            </button>
-
-            {/* If customizing, show the customization text area */}
-            {isCustomizing && selectedProduct?.id === product.id && (
-              <div className="mt-4">
-                <textarea
-                  className="w-full p-2 border rounded text-blue-700"
-                  placeholder="Enter customization..."
-                  value={customization}
-                  onChange={(e) => setCustomization(e.target.value)}
-                />
+              {/* Quantity Control */}
+              <div className="flex items-center justify-between my-2">
                 <button
-                  onClick={() => sendOrder(product)}
-                  className="w-full bg-yellow-500 text-white py-2 mt-2 rounded"
+                  onClick={() => handleQuantityChange(product.id, 'decrement')}
+                  className="px-3 py-1 bg-red-500 text-white rounded"
                 >
-                  Send Order
+                  -
+                </button>
+                <span>{quantity}</span>
+                <button
+                  onClick={() => handleQuantityChange(product.id, 'increment')}
+                  className="px-3 py-1 bg-green-500 text-white rounded"
+                >
+                  +
                 </button>
               </div>
-            )}
-          </div>
-        ))}
+
+              {/* Show Item Total Price */}
+              <p className="text-lg">Total: ${(quantity * product.price).toFixed(2)}</p>
+
+              {/* Customize Button */}
+              <button
+                onClick={() => setIsCustomizing(isCustomizing === product.id ? null : product.id)}
+                className="w-full bg-blue-500 text-white py-2 mt-2 rounded"
+              >
+                {isCustomizing === product.id ? 'Hide Customization' : 'Customize'}
+              </button>
+
+              {/* If customizing, show the customization text area */}
+              {isCustomizing === product.id && (
+                <div className="mt-4">
+                  <textarea
+                    className="w-full p-2 border rounded text-blue-700"
+                    placeholder="Enter customization..."
+                    value={customization[product.id] || ''}
+                    onChange={(e) => handleCustomization(product.id, e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
+
+      {/* Order Summary */}
+      {order.length > 0 && (
+        <div className="mt-8 p-4 border rounded-md shadow-md">
+          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+          {order.map((item) => (
+            <div key={item.id} className="flex justify-between items-center mb-2">
+              <span>{item.name} x {item.quantity}</span>
+              <span>${(item.price * item.quantity).toFixed(2)}</span>
+            </div>
+          ))}
+          <div className="text-xl font-bold mt-4">
+            Total: ${totalPrice.toFixed(2)}
+          </div>
+          <button
+            onClick={sendOrder}
+            className="w-full bg-yellow-500 text-white py-2 mt-4 rounded"
+          >
+            Send Order to Cook
+          </button>
+        </div>
+      )}
     </div>
   );
 }
