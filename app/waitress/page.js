@@ -28,8 +28,8 @@ export default function Waitress () {
     return (
         <div>
             <h1>Take Order</h1>
-            <input type="text" value={product} onChange={e => setProduct(e.target.value)} placeholder="Product" />
-            <textarea placeholder="Customization" value={customization} onChange={(e) => setCustomization(e.target.value)} />
+            <input type="text" className="text-blue-600" value={product} onChange={e => setProduct(e.target.value)} placeholder="Product" />
+            <textarea style={{ color: 'blue' }} placeholder="Customization" value={customization} onChange={(e) => setCustomization(e.target.value)} />
             <button onClick={sendOrder}>Send Order</button>
         </div>
     )
