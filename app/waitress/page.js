@@ -8,6 +8,8 @@ import Image from "next/image";
 import Pizza from '../images/pizza.jpg';
 import Burger from '../images/burger.jpg';
 
+
+//customize with product images
 // Initial product data
 const products = [
   {
