@@ -25,15 +25,16 @@ export default function Cook () {
     return (
         <div>
             <h1>Incoming Orders</h1>
-            <ul>
-                {orders.map(order => (
-                    <li key={order.id}>
-                        <strong>Product: {order.product}</strong>
-                        <p>Customization: {order.customization}</p>
-                        <p>Status: {order.status}</p>
-                    </li>
-                ))}
-            </ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {orders.map((order) => (
+          <div key={order.id} className="card p-4 border rounded-md shadow-md">
+            <h2 className="text-xl font-semibold">Product: {order.product}</h2>
+            <p className="text-lg">Quantity: {order.quantity}</p>
+            <p className="text-lg">Customization: {order.customization}</p>
+            <p className="text-sm text-gray-500">Status: {order.status}</p>
+          </div>
+        ))}
+      </div>
         </div>
     )
 }
