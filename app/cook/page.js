@@ -31,6 +31,7 @@ export default function Cook() {
       console.error("Error updating order status: ", error);
     }
   }
+//   order id slice to get 4 unique digits
 
   return (
     <div className="container mx-auto p-4">
