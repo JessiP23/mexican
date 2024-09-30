@@ -4,6 +4,7 @@ import { useState } from "react"
 import { db } from "@/firebase"
 import {collection, addDoc} from 'firebase/firestore'
 
+//first function of waitress
 export default function Waitress () {
     const [product, setProduct] = useState('')
     const [customization, setCustomization] = useState('')
