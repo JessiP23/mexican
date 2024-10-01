@@ -81,7 +81,7 @@ export default function Cook() {
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                   aria-label={`Mark order ${order.id.slice(-4)} as completed`}
                 >
-                  Mark as Completed
+                  Marcar como completado
                 </button>
               </div>
             </div>
