@@ -150,7 +150,7 @@ export default function Waitress() {
       {/* Order Summary */}
       {order.length > 0 && (
         <div className="mt-8 p-4 border rounded-md shadow-md">
-          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+          <h2 className="text-xl font-bold mb-4">Resumen de la orden</h2>
           {order.map((item) => (
             <div key={item.id} className="flex justify-between items-center mb-2">
               <span>{item.name} x {item.quantity}</span>
