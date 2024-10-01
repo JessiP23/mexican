@@ -48,7 +48,7 @@ export default function Cook() {
         {orders.map((order) => (
           <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="bg-blue-600 text-white p-4">
-              <h2 className="text-xl font-semibold">Order #{order.id.slice(-4)}</h2>
+              <h2 className="text-xl font-semibold">Orden #{order.id.slice(-4)}</h2>
               <p className="text-sm">Status: {order.status}</p>
             </div>
             <div className="p-4">
