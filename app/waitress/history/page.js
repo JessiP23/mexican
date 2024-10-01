@@ -36,8 +36,9 @@ export default function History() {
             <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="bg-blue-600 text-white p-4">
                 <h2 className="text-xl font-semibold">Orden #{order.id.slice(-4)}</h2>
-                <p className="text-sm">Estado: {order.status}</p>
+                {/* <p className="text-sm">Estado: {order.status}</p> */}
                 <p className="text-sm">{new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
+                <h1>Cliente: {order.customerName}</h1>
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2 text-blue-900">Articulos:</h3>
