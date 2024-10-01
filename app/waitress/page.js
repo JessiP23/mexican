@@ -20,7 +20,7 @@ const products = [
   },
   {
     id: 2,
-    name: 'Burger',
+    name: 'Hamburguesa',
     image: Burger,
     price: 9.99,
   },
