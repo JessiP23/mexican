@@ -39,6 +39,7 @@ export default function Waitress() {
   const [order, setOrder] = useState([]);
   const [customization, setCustomization] = useState({});
   const [isCustomizing, setIsCustomizing] = useState(null);
+  const [customerName, setCustomerName] = useState('');
 
   // Function to handle quantity changes
   const handleQuantityChange = (productId, type) => {
@@ -67,6 +68,10 @@ export default function Waitress() {
 
   // Function to send order to Firebase
   const sendOrder = async () => {
+    if (!customerName) {
+      alert('Please enter customer name');
+      return;
+    }
     try {
       await addDoc(collection(db, 'orders'), {
         items: order.map(item => ({
@@ -75,6 +80,7 @@ export default function Waitress() {
           quantity: item.quantity,
           price: item.price * item.quantity,
         })),
+        customerName,
         totalPrice,
         status: 'pending',
         createdAt: new Date(),
@@ -82,6 +88,7 @@ export default function Waitress() {
       setOrder([]);
       setCustomization({});
       setIsCustomizing(null);
+      setCustomerName('');
       alert('Order sent to the cook!');
     } catch (e) {
       console.error('Error adding document: ', e);
@@ -172,6 +179,16 @@ export default function Waitress() {
     <div className="text-xl font-bold mt-4">
       Total: ${totalPrice.toFixed(2)}
     </div>
+    <div className="mb-4">
+              <label className="block text-gray-700 dark:text-gray-300">Customer Name</label>
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="w-full p-2 border rounded text-blue-950"
+                placeholder="Enter customer name"
+              />
+            </div>
     <button
       onClick={sendOrder}
       className="w-full bg-yellow-500 text-white py-2 mt-4 rounded"
