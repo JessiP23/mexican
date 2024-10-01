@@ -189,14 +189,14 @@ export default function Waitress() {
                 placeholder="Enter customer name"
               />
             </div>
-    <button
-      onClick={sendOrder}
-      className="w-full bg-yellow-500 text-white py-2 mt-4 rounded"
-    >
-      Enviar orden al cocinero
-    </button>
-  </div>
-)}
+            <button
+              onClick={sendOrder}
+              className="w-full bg-yellow-500 text-white py-2 mt-4 rounded"
+            >
+              Enviar orden al cocinero
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
