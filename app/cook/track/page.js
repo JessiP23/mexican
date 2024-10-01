@@ -171,7 +171,7 @@ export default function Track() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Add Financial Data</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Agregar datos financieros</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="revenue" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
