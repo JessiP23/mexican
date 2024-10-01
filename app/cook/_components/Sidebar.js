@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Home, ClipboardList, History, User, DollarSign, Menu } from 'lucide-react'
 
 const sidebarItems = [
-  { name: 'Dashboard', href: '/cook', icon: Home },
+  { name: 'Panel', href: '/cook', icon: Home },
   { name: 'Historial', href: '/cook/history', icon: History },
   { name: 'Perfil', href: '/cook/profile', icon: User },
   { name: 'Track', href: '/cook/track', icon: DollarSign },
