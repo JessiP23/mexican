@@ -30,7 +30,7 @@ export default function History() {
     <div className="flex h-full bg-gray-100 dark:bg-gray-900">
       <Sidebar />
       <div className="flex-1 p-4 md:ml-64">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Order History</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Historial de pedidos</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {completedOrders.map((order) => (
             <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
