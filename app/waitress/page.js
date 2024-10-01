@@ -164,7 +164,7 @@ export default function Waitress() {
             onClick={sendOrder}
             className="w-full bg-yellow-500 text-white py-2 mt-4 rounded"
           >
-            Send Order to Cook
+            Enviar orden al cocinero
           </button>
         </div>
       )}
