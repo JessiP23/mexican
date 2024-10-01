@@ -62,7 +62,7 @@ export default function Cook() {
                     </div>
                     {item.customization && (
                       <p className="text-sm text-gray-900 mt-1">
-                        Customization: {item.customization}
+                        Personalizacion: {item.customization}
                       </p>
                     )}
                   </li>
