@@ -115,7 +115,7 @@ export default function Track() {
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Seguimiento de las finanzas</h1>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Today Revenue</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Ingresos de hoy</h2>
           <p className="text-2xl font-bold text-green-600">${todayRevenue.toFixed(2)}</p>
         </div>
 
