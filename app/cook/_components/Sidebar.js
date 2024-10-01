@@ -9,7 +9,7 @@ const sidebarItems = [
   { name: 'Panel', href: '/cook', icon: Home },
   { name: 'Historial', href: '/cook/history', icon: History },
   { name: 'Perfil', href: '/cook/profile', icon: User },
-  { name: 'Track', href: '/cook/track', icon: DollarSign },
+  { name: 'Seguimiento', href: '/cook/track', icon: DollarSign },
 ]
 
 export default function Sidebar() {
