@@ -40,7 +40,7 @@ export default function History() {
                 <p className="text-sm">{new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2 text-blue-900">Items:</h3>
+                <h3 className="text-lg font-semibold mb-2 text-blue-900">Articulos:</h3>
                 <ul className="space-y-4">
                   {order.items.map((item, index) => (
                     <li key={index} className="border-b pb-2 text-blue-950">
