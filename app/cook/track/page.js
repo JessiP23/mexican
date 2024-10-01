@@ -11,6 +11,7 @@ export default function Track() {
   const [expenses, setExpenses] = useState('')
   const [financialData, setFinancialData] = useState([])
   const [todayRevenue, setTodayRevenue] = useState(0)
+  const [dailyRevenue, setDailyRevenue] = useState([])
 
   useEffect(() => {
     // Fetch financial data
@@ -25,6 +26,40 @@ export default function Track() {
     }
 
     fetchFinancialData()
+
+    // Fetch and aggregate daily revenue data
+    const fetchDailyRevenue = async () => {
+      const thirtyDaysAgo = new Date()
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+      
+      const q = query(
+        collection(db, 'orders'),
+        orderBy('createdAt', 'desc'),
+        limit(1000) // Adjust this limit as needed
+      )
+
+      const querySnapshot = await getDocs(q)
+      const orderData = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        createdAt: doc.data().createdAt.toDate()
+      }))
+
+      const dailyTotals = orderData.reduce((acc, order) => {
+        if (order.createdAt >= thirtyDaysAgo) {
+          const dateKey = order.createdAt.toISOString().split('T')[0]
+          acc[dateKey] = (acc[dateKey] || 0) + order.totalPrice
+        }
+        return acc
+      }, {})
+
+      const sortedDailyRevenue = Object.entries(dailyTotals)
+        .map(([date, total]) => ({ date, total }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+
+      setDailyRevenue(sortedDailyRevenue)
+    }
+
+    fetchDailyRevenue()
 
     // Listen for new orders to update today's revenue
     const today = new Date()
@@ -80,8 +115,44 @@ export default function Track() {
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Track Finances</h1>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Todays Revenue</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Today Revenue</h2>
           <p className="text-2xl font-bold text-green-600">${todayRevenue.toFixed(2)}</p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Daily Revenue</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Revenue</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                {dailyRevenue.map((day, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : ''}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{day.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">${day.total.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Daily Revenue Chart</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={dailyRevenue}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="total" name="Revenue" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
@@ -103,7 +174,7 @@ export default function Track() {
           <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Add Financial Data</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="revenue" className="block text-sm font-medium text-white dark:text-gray-300">
+              <label htmlFor="revenue" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Revenue
               </label>
               <input
