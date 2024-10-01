@@ -84,6 +84,7 @@ export default function Waitress() {
 
   return (
     <div className="container mx-auto p-4">
+      {/* sidebar */}
       <Sidebar />
       <h1 className="text-2xl font-bold mb-4">Tomar orden</h1>
 
