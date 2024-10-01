@@ -58,7 +58,7 @@ export default function Cook() {
                   <li key={index} className="border-b pb-2 text-blue-950">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">{item.product}</span>
-                      <span>Qty: {item.quantity}</span>
+                      <span>Cantidad: {item.quantity}</span>
                     </div>
                     {item.customization && (
                       <p className="text-sm text-gray-900 mt-1">
