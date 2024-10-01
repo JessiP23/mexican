@@ -21,7 +21,7 @@ export default function Profile() {
             <div>
               <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Informacion Personal</h2>
               <p className="text-gray-600 dark:text-gray-400">Nombre: {profile.name}</p>
-              <p className="text-gray-600 dark:text-gray-400">Role: {profile.role}</p>
+              <p className="text-gray-600 dark:text-gray-400">Ocupacion: {profile.role}</p>
             </div>
             <div>
               <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Contact Information</h2>
