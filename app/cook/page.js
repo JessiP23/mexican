@@ -74,7 +74,7 @@ export default function Cook() {
                   className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
                   aria-label={`Start preparing order ${order.id.slice(-4)}`}
                 >
-                  Start Preparing
+                  Empieza a preparar
                 </button>
                 <button
                   onClick={() => updateOrderStatus(order.id, 'completed')}
