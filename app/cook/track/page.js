@@ -175,7 +175,7 @@ export default function Track() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="revenue" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Revenue
+                Ganancias
               </label>
               <input
                 type="number"
