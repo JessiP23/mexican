@@ -136,7 +136,7 @@ export default function Waitress() {
                 <div className="mt-4">
                   <textarea
                     className="w-full p-2 border rounded text-blue-700"
-                    placeholder="Enter customization..."
+                    placeholder="Escribir personalizacion..."
                     value={customization[product.id] || ''}
                     onChange={(e) => handleCustomization(product.id, e.target.value)}
                   />
