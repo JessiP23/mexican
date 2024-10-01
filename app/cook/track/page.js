@@ -156,7 +156,7 @@ export default function Track() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Financial Overview</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Panorama Financer</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={financialData}>
               <CartesianGrid strokeDasharray="3 3" />
