@@ -7,8 +7,8 @@ import { Home, ClipboardList, History, User, DollarSign, Menu } from 'lucide-rea
 
 const sidebarItems = [
   { name: 'Dashboard', href: '/cook', icon: Home },
-  { name: 'History', href: '/cook/history', icon: History },
-  { name: 'Profile', href: '/cook/profile', icon: User },
+  { name: 'Historial', href: '/cook/history', icon: History },
+  { name: 'Perfil', href: '/cook/profile', icon: User },
   { name: 'Track', href: '/cook/track', icon: DollarSign },
 ]
 
