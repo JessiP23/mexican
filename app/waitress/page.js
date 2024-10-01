@@ -128,7 +128,7 @@ export default function Waitress() {
                 onClick={() => setIsCustomizing(isCustomizing === product.id ? null : product.id)}
                 className="w-full bg-blue-500 text-white py-2 mt-2 rounded"
               >
-                {isCustomizing === product.id ? 'Hide Customization' : 'Customize'}
+                {isCustomizing === product.id ? 'Esconder personalizacion' : 'Personalizar'}
               </button>
 
               {/* If customizing, show the customization text area */}
