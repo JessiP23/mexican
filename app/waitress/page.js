@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import Pizza from '../images/pizza.jpg';
 import Burger from '../images/burger.jpg';
+import Taco from '../images/taco.jpg';
 
 import Sidebar from "./_components/Sidebar";
 
@@ -26,6 +27,12 @@ const products = [
     image: Burger,
     price: 9.99,
   },
+  {
+    id: 3,
+    name: 'Taco',
+    image: Taco,
+    price: 4,
+  }
 ];
 
 export default function Waitress() {
