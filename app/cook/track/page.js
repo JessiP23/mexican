@@ -142,7 +142,7 @@ export default function Track() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Daily Revenue Chart</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Grafico Diario de Ingresos</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={dailyRevenue}>
               <CartesianGrid strokeDasharray="3 3" />
