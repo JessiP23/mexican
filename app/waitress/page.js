@@ -86,7 +86,7 @@ const products = [
     id: 11,
     name: 'Cemitas',
     image: Cemitas,
-    price: 10.00
+    price: 10.00 
   },
   {
     id: 12,
