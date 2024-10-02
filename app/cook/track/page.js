@@ -20,7 +20,7 @@ export default function Track() {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       thirtyDaysAgo.setHours(0, 0, 0, 0);
   
-      // Query for orders from the last 30 days
+      // Query  for orders from the last 30 days
       const q = query(
         collection(db, 'orders'),
         where('createdAt', '>=', Timestamp.fromDate(thirtyDaysAgo)),
