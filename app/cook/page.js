@@ -43,7 +43,7 @@ export default function Cook() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
       <div className="flex-1 p-4 md:ml-64">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Pedidos entrantes</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white md: ml-20">Pedidos entrantes</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {orders.map((order) => (
           <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
