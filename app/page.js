@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Headphones, Mail, Lock, Globe } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase';
-import { collection, doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
 
 const translations = {
@@ -57,17 +57,43 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
-    console.log('Attempting to log in...'); // Debugging line
+    setError('');
+    console.log('Attempting to log in...');
+  
     try {
+      // Authenticate user
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log('User signed in:', user); // Debugging line
-
-      // Redirect to the desired page after successful login
-      router.push('/waitress');
+      console.log('User signed in:', user);
+  
+      // Fetch user role from Firestore
+      const userRef = collection(db, 'users');
+      const q = query(userRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.docs.length > 0) {
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        console.log('User  data:', userData);
+        
+        // Redirect based on user role
+        switch (userData.role) {
+          case 'waitress':
+            router.push('/waitress');
+            break;
+          case 'cook':
+            router.push('/cook');
+            break;
+          default:
+            setError('Invalid user role');
+            break;
+        }
+      } else {
+        setError('User  data not found');
+      }
     } catch (err) {
       setError(err.message);
+      console.error('Login error:', err);
     }
   };
 
