@@ -245,9 +245,9 @@ export default function Track() {
         <tbody>
           {expenseData.map((exp) => (
             <tr key={exp.id}>
-              <td className="py-2 px-4 border-b">{exp.reason}</td>
-              <td className="py-2 px-4 border-b">{exp.date}</td>
-              <td className="py-2 px-4 border-b">${exp.expenses.toFixed(2)}</td>
+              <td className="py-2 px-4 border-b text-center">{exp.reason}</td>
+              <td className="py-2 px-4 border-b text-center">{exp.date}</td>
+              <td className="py-2 px-4 border-b text-center">${exp.expenses.toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
