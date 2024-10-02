@@ -27,7 +27,7 @@ export default function Sidebar() {
       </button>
       <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-          <ul className="space-y-2 font-medium">
+          <ul className="sm:mt-10 space-y-4 font-medium">
             {sidebarItems.map((item) => {
               const isActive = pathname === item.href
               return (
