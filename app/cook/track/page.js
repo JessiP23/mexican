@@ -180,20 +180,20 @@ export default function Track() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Agregar Gasto</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Razón del Gasto
-          </label>
-          <input
-            type="text"
-            id="reason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            required
-          />
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Agregar Gasto</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Razón del Gasto
+              </label>
+              <input
+                type="text"
+                id="reason"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
         </div>
         <div>
           <label htmlFor="expenses" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
