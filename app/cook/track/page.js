@@ -22,11 +22,11 @@ export default function Track() {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       thirtyDaysAgo.setHours(0, 0, 0, 0);
   
-      // Query  for orders from the last 30 days
+      // Query for orders from the last 30 days
       const q = query(
         collection(db, 'orders'),
         where('createdAt', '>=', Timestamp.fromDate(thirtyDaysAgo)),
-        orderBy('createdAt', 'asc') // Only order by createdAt to avoid composite index
+        orderBy('createdAt', 'asc')
       );
   
       const querySnapshot = await getDocs(q);
@@ -41,7 +41,6 @@ export default function Track() {
   
       const dailyTotals = {};
       completedOrders.forEach(order => {
-        // Using local time zone without specifying 'UTC'
         const dateKey = order.createdAt.toLocaleDateString('en-US'); 
         dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + order.totalPrice;
       });
@@ -51,6 +50,10 @@ export default function Track() {
         .sort((a, b) => new Date(a.date) - new Date(b.date));
   
       setDailyRevenue(sortedDailyRevenue);
+
+      // Update today's revenue
+      const today = new Date().toLocaleDateString('en-US');
+      setTodayRevenue(dailyTotals[today] || 0);
     };
   
     // Fetch financial data
@@ -85,17 +88,15 @@ export default function Track() {
     const ordersQuery = query(
       collection(db, 'orders'),
       where('createdAt', '>=', Timestamp.fromDate(today)),
+      where('status', '==', 'completed'),
       orderBy('createdAt', 'desc')
     );
   
-    // Set up the real-time listener here and get the unsubscribe function
     const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
       let dailyRevenue = 0;
       snapshot.forEach((doc) => {
         const orderData = doc.data();
-        if (orderData.status === 'completed') {
-          dailyRevenue += orderData.totalPrice;
-        }
+        dailyRevenue += orderData.totalPrice;
       });
       setTodayRevenue(dailyRevenue);
     });
@@ -106,9 +107,8 @@ export default function Track() {
     fetchExpenses();
   
     // Clean up the listener on component unmount
-    return () => unsubscribe; // Now unsubscribe will be a function
+    return () => unsubscribe();
   }, []);
-  
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -133,6 +133,7 @@ export default function Track() {
     setExpenses('');
     setReason('');
   };
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
@@ -171,8 +172,8 @@ export default function Track() {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={dailyRevenue}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
-              <YAxis />
+              <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} label={{ value: 'Date', position: 'insideBottom', offset: -10 }} />
+              <YAxis label={{ value: 'Revenue', angle: -90, position: 'insideLeft' }} />
               <Tooltip labelFormatter={(label) => new Date(label).toLocaleDateString()} />
               <Legend />
               <Line type="monotone" dataKey="total" name="Revenue" stroke="#8884d8" />
