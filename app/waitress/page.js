@@ -90,7 +90,7 @@ const products = [
   },
   {
     id: 12,
-    name: 'Pechuga',
+    name: 'Pechuga a la plancha',
     image: Pechuga,
     price: 15.00
   },
