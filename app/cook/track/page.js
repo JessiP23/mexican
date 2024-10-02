@@ -9,6 +9,8 @@ import Sidebar from "../_components/Sidebar"
 export default function Track() {
   const [revenue, setRevenue] = useState('')
   const [expenses, setExpenses] = useState('')
+  const [reason, setReason] = useState('')
+  const [expenseData, setExpenseData] = useState([])
   const [financialData, setFinancialData] = useState([])
   const [todayRevenue, setTodayRevenue] = useState(0)
   const [dailyRevenue, setDailyRevenue] = useState([])
@@ -93,29 +95,28 @@ export default function Track() {
   
   
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const revenueNum = parseFloat(revenue)
-    const expensesNum = parseFloat(expenses)
+    e.preventDefault();
+
+    const expensesNum = parseFloat(expenses);
 
     // Save to Firestore
-    await addDoc(collection(db, 'financials'), {
-      revenue: revenueNum,
+    await addDoc(collection(db, 'expenses'), {
+      reason,
       expenses: expensesNum,
       date: Timestamp.now()
-    })
+    });
 
-    // Update local state
-    setFinancialData([...financialData, {
-      revenue: revenueNum,
+    // Update local state to display in table
+    setExpenseData([...expenseData, {
+      reason,
       expenses: expensesNum,
       date: new Date().toLocaleDateString()
-    }])
+    }]);
 
-    // Reset form
-    setRevenue('')
-    setExpenses('')
-  }
-
+    // Reset form fields
+    setExpenses('');
+    setReason('');
+  };
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
@@ -179,42 +180,67 @@ export default function Track() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Agregar datos financieros</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="revenue" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Ganancias
-              </label>
-              <input
-                type="number"
-                id="revenue"
-                value={revenue}
-                onChange={(e) => setRevenue(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="expenses" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Gastos
-              </label>
-              <input
-                type="number"
-                id="expenses"
-                value={expenses}
-                onChange={(e) => setExpenses(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              Enviar
-            </button>
-          </form>
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Agregar Gasto</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Razón del Gasto
+          </label>
+          <input
+            type="text"
+            id="reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            required
+          />
         </div>
+        <div>
+          <label htmlFor="expenses" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Precio del Gasto
+          </label>
+          <input
+            type="number"
+            id="expenses"
+            value={expenses}
+            onChange={(e) => setExpenses(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        >
+          Enviar
+        </button>
+      </form>
+
+      {/* Display Expense Table */}
+      <h3 className="text-lg font-semibold mt-6 mb-4 text-gray-800 dark:text-white">Lista de Gastos</h3>
+      <table className="min-w-full bg-white dark:bg-gray-700">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b">Razón</th>
+            <th className="py-2 px-4 border-b">Fecha</th>
+            <th className="py-2 px-4 border-b">Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {expenseData.map((exp) => (
+            <tr key={exp.id}>
+              <td className="py-2 px-4 border-b">{exp.reason}</td>
+              <td className="py-2 px-4 border-b">{exp.date}</td>
+              <td className="py-2 px-4 border-b">${exp.expenses.toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+
+
+       
       </div>
     </div>
   )
