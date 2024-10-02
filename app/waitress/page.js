@@ -5,9 +5,28 @@ import { db } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Image from "next/image";
 
-import Pizza from '../images/pizza.jpg';
-import Burger from '../images/burger.jpg';
 import Taco from '../images/taco.jpg';
+import Beans from '../images/beans.jpg';
+import Bistec from '../images/bistec.jpg';
+import Burrito from '../images/burrito.jpg';
+import Cemitas from '../images/cemitas.jpg';
+import Chilaquiles from '../images/chilaquiles.jpg';
+import Enchiladas from '../images/enchiladas.jpg';
+import Fajitas from '../images/fajitas.jpg';
+import Fries from '../images/fries.jpg';
+import Guacamole from '../images/guacamole.jpg';
+import Horchata from '../images/horchata.jpg';
+import Huevo from '../images/huevo.jpg';
+import Jamaica from '../images/jamaica.jpg';
+import Pechuga from '../images/pechuga.jpg';
+import Quesadilla from '../images/quesadilla.jpg';
+import Rice from '../images/rice.jpg';
+import Salad from '../images/salad.jpg';
+import SodaBottle from '../images/sodabottle.jpg';
+import SodaCan from '../images/sodacan.jpg';
+import Torta from '../images/torta.jpg';
+import Tostadas from '../images/tostadas.jpg';
+import Water from '../images/water.jpg';
 
 import Sidebar from "./_components/Sidebar";
 
@@ -16,23 +35,138 @@ import Sidebar from "./_components/Sidebar";
 // Initial product data
 const products = [
   {
-    id: 1,
-    name: 'Pizza',
-    image: Pizza,
-    price: 12.99,
-  },
-  {
-    id: 2,
-    name: 'Hamburguesa',
-    image: Burger,
-    price: 9.99,
-  },
-  {
     id: 3,
     name: 'Taco',
     image: Taco,
-    price: 4,
+    price: 4.00,
+  },
+  {
+    id: 4,
+    name: 'Burritos',
+    image: Burrito,
+    price: 13.00,
+  },
+  {
+    id: 5,
+    name: 'Tortas',
+    image: Torta,
+    price: 10.00,
+  },
+  {
+    id: 6,
+    name: 'Quesadillas',
+    image: Quesadilla,
+    price: 13.00,
+  },
+  {
+    id: 7,
+    name: 'Chilaquiles',
+    image: Chilaquiles,
+    price: 13.00,
+  },
+  {
+    id: 8,
+    name: 'Enchiladas',
+    image: Enchiladas,
+    price: 15.00,
+  },
+  {
+    id: 9,
+    name: 'Fajitas',
+    image: Fajitas,
+    price: 15.00,
+  },
+  {
+    id: 10,
+    name: 'Tostadas',
+    image: Tostadas,
+    price: 5.00
+  },
+  {
+    id: 11,
+    name: 'Cemitas',
+    image: Cemitas,
+    price: 10.00
+  },
+  {
+    id: 12,
+    name: 'Pechuga',
+    image: Pechuga,
+    price: 15.00
+  },
+  {
+    id: 13,
+    name: 'Bistec Encebollado',
+    image: Bistec,
+    price: 15.00
+  },
+  {
+    id: 14,
+    name: 'Huevo a la mexicana',
+    image: Huevo,
+    price: 13.00
+  },
+  {
+    id: 15,
+    name: 'Arroz',
+    image: Rice,
+    price: 5.00
+  },
+  {
+    id: 16,
+    name: 'Frijoles',
+    image: Beans,
+    price: 5.00
+  },
+  {
+    id: 17,
+    name: 'Papas',
+    image: Fries,
+    price: 5.00
+  },
+  {
+    id: 18,
+    name: 'Ensalada',
+    image: Salad,
+    price: 5.00
+  },
+  {
+    id: 19,
+    name: 'Guacamole',
+    image: Guacamole,
+    price: 5.00
+  },
+  {
+    id: 20,
+    name: 'Horchata',
+    image: Horchata,
+    price: 5.00
+  },
+  {
+    id: 21,
+    name: 'Jamaica',
+    image: Jamaica,
+    price: 5.00
+  },
+  {
+    id: 22,
+    name: 'Agua',
+    image: Water,
+    price: 2.00
+  },
+  {
+    id: 23,
+    name: 'Refresco en lata',
+    image: SodaCan,
+    price: 2.00
+  },
+  {
+    id: 24,
+    name: 'Refresco en botella',
+    image: SodaBottle,
+    price: 3.00
   }
+
 ];
 
 export default function Waitress() {
