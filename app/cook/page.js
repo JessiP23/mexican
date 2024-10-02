@@ -10,7 +10,6 @@ export default function Cook() {
   
   const [completedOrders, setCompletedOrders] = useState([]);
 
-
   useEffect(() => {
     const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -44,11 +43,11 @@ export default function Cook() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
       <div className="flex-1 p-4 md:ml-64">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white md: ml-20">Pedidos entrantes</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white md:ml-20">Pedidos entrantes</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {orders.map((order) => (
           <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="bg-blue-600 text-white p-4">
+            <div className={`${order.status === 'En progreso' ? 'bg-yellow-500' : 'bg-blue-600'} text-white p-4`}>
               <h2 className="text-xl font-semibold">Orden #{order.id.slice(-4)}</h2>
               <p className="text-sm">Modo: {order.status}</p>
               <h1>Cliente: {order.customerName}</h1>
@@ -74,14 +73,14 @@ export default function Cook() {
                 <button
                   onClick={() => updateOrderStatus(order.id, 'En progreso')}
                   className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
-                  aria-label={`Start preparing order ${order.id.slice(-4)}`}
+                  aria-label={`Empieza a preparar orden ${order.id.slice(-4)}`}
                 >
                   Empieza a preparar
                 </button>
                 <button
                   onClick={() => updateOrderStatus(order.id, 'completed')}
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                  aria-label={`Mark order ${order.id.slice(-4)} as completed`}
+                  aria-label={`Marcar orden ${order.id.slice(-4)} como completada`}
                 >
                   Marcar como completado
                 </button>
