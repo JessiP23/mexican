@@ -63,6 +63,21 @@ export default function Track() {
       }));
       setFinancialData(data.reverse());
     };
+
+    const fetchExpenses = async () => {
+      try {
+        const q = query(collection(db, 'expenses'), orderBy('date', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const fetchedExpenses = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+          date: doc.data().date.toDate().toLocaleDateString('en-US')
+        }));
+        setExpenseData(fetchedExpenses);
+      } catch (error) {
+        console.error('Error fetching expenses: ', error);
+      }
+    }
   
     // Listen for new orders to update today's revenue
     const today = new Date();
@@ -88,6 +103,7 @@ export default function Track() {
     // Fetch the initial data
     fetchFinancialData();
     fetchDailyRevenue();
+    fetchExpenses();
   
     // Clean up the listener on component unmount
     return () => unsubscribe; // Now unsubscribe will be a function
