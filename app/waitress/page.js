@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { db } from "@/firebase";
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Image from "next/image";
 
 import Pizza from '../images/pizza.jpg';
@@ -83,7 +83,7 @@ export default function Waitress() {
         customerName,
         totalPrice,
         status: 'pending',
-        createdAt: new Date(),
+        createdAt: serverTimestamp(),
       });
       setOrder([]);
       setCustomization({});

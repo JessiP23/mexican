@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { db } from "@/firebase"
-import { collection, addDoc, query, orderBy, limit, onSnapshot, Timestamp, getDocs } from 'firebase/firestore'
+import { collection, addDoc, query, orderBy, limit, onSnapshot, Timestamp, getDocs, where } from 'firebase/firestore'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import Sidebar from "../_components/Sidebar"
 
@@ -14,76 +14,84 @@ export default function Track() {
   const [dailyRevenue, setDailyRevenue] = useState([])
 
   useEffect(() => {
+    // Fetch and aggregate daily revenue data
+    const fetchDailyRevenue = async () => {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      thirtyDaysAgo.setHours(0, 0, 0, 0);
+  
+      // Query for orders from the last 30 days
+      const q = query(
+        collection(db, 'orders'),
+        where('createdAt', '>=', Timestamp.fromDate(thirtyDaysAgo)),
+        orderBy('createdAt', 'asc') // Only order by createdAt to avoid composite index
+      );
+  
+      const querySnapshot = await getDocs(q);
+      
+      const orderData = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        createdAt: doc.data().createdAt.toDate(),
+      }));
+  
+      // Filter for 'completed' orders locally
+      const completedOrders = orderData.filter(order => order.status === 'completed');
+  
+      const dailyTotals = {};
+      completedOrders.forEach(order => {
+        // Using local time zone without specifying 'UTC'
+        const dateKey = order.createdAt.toLocaleDateString('en-US'); 
+        dailyTotals[dateKey] = (dailyTotals[dateKey] || 0) + order.totalPrice;
+      });
+  
+      const sortedDailyRevenue = Object.entries(dailyTotals)
+        .map(([date, total]) => ({ date, total }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+      setDailyRevenue(sortedDailyRevenue);
+    };
+  
     // Fetch financial data
     const fetchFinancialData = async () => {
-      const q = query(collection(db, 'financials'), orderBy('date', 'desc'), limit(30))
-      const querySnapshot = await getDocs(q)
+      const q = query(collection(db, 'financials'), orderBy('date', 'desc'), limit(30));
+      const querySnapshot = await getDocs(q);
       const data = querySnapshot.docs.map(doc => ({
         ...doc.data(),
         date: doc.data().date.toDate().toLocaleDateString()
-      }))
-      setFinancialData(data.reverse())
-    }
-
-    fetchFinancialData()
-
-    // Fetch and aggregate daily revenue data
-    const fetchDailyRevenue = async () => {
-      const thirtyDaysAgo = new Date()
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-      
-      const q = query(
-        collection(db, 'orders'),
-        orderBy('createdAt', 'desc'),
-        limit(1000) // Adjust this limit as needed
-      )
-
-      const querySnapshot = await getDocs(q)
-      const orderData = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        createdAt: doc.data().createdAt.toDate()
-      }))
-
-      const dailyTotals = orderData.reduce((acc, order) => {
-        if (order.createdAt >= thirtyDaysAgo) {
-          const dateKey = order.createdAt.toISOString().split('T')[0]
-          acc[dateKey] = (acc[dateKey] || 0) + order.totalPrice
-        }
-        return acc
-      }, {})
-
-      const sortedDailyRevenue = Object.entries(dailyTotals)
-        .map(([date, total]) => ({ date, total }))
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-
-      setDailyRevenue(sortedDailyRevenue)
-    }
-
-    fetchDailyRevenue()
-
+      }));
+      setFinancialData(data.reverse());
+    };
+  
     // Listen for new orders to update today's revenue
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const ordersQuery = query(
       collection(db, 'orders'),
-      orderBy('createdAt', 'desc'),
-      limit(100) // Adjust this limit as needed
-    )
-
+      where('createdAt', '>=', Timestamp.fromDate(today)),
+      orderBy('createdAt', 'desc')
+    );
+  
+    // Set up the real-time listener here and get the unsubscribe function
     const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
-      let dailyRevenue = 0
+      let dailyRevenue = 0;
       snapshot.forEach((doc) => {
-        const orderData = doc.data()
-        if (orderData.createdAt.toDate() >= today) {
-          dailyRevenue += orderData.totalPrice
+        const orderData = doc.data();
+        if (orderData.status === 'completed') {
+          dailyRevenue += orderData.totalPrice;
         }
-      })
-      setTodayRevenue(dailyRevenue)
-    })
-
-    return () => unsubscribe()
-  }, [])
-
+      });
+      setTodayRevenue(dailyRevenue);
+    });
+  
+    // Fetch the initial data
+    fetchFinancialData();
+    fetchDailyRevenue();
+  
+    // Clean up the listener on component unmount
+    return () => unsubscribe; // Now unsubscribe will be a function
+  }, []);
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
     const revenueNum = parseFloat(revenue)
@@ -132,7 +140,7 @@ export default function Track() {
               <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                 {dailyRevenue.map((day, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : ''}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{day.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{new Date(day.date).toLocaleDateString()}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">${day.total.toFixed(2)}</td>
                   </tr>
                 ))}
@@ -146,9 +154,9 @@ export default function Track() {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={dailyRevenue}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
+              <XAxis dataKey="date" tickFormatter={(date) => new Date(date).toLocaleDateString()} />
               <YAxis />
-              <Tooltip />
+              <Tooltip labelFormatter={(label) => new Date(label).toLocaleDateString()} />
               <Legend />
               <Line type="monotone" dataKey="total" name="Revenue" stroke="#8884d8" />
             </LineChart>
