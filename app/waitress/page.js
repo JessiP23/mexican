@@ -4,6 +4,7 @@ import { useState } from "react";
 import { db } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Image from "next/image";
+import Notification from "../components/Notification";
 
 import Taco from '../images/taco.jpg';
 import Beans from '../images/beans.jpg';
@@ -174,6 +175,8 @@ export default function Waitress() {
   const [customization, setCustomization] = useState({});
   const [isCustomizing, setIsCustomizing] = useState(null);
   const [customerName, setCustomerName] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+
 
   // Function to handle quantity changes
   const handleQuantityChange = (productId, type) => {
@@ -223,7 +226,7 @@ export default function Waitress() {
       setCustomization({});
       setIsCustomizing(null);
       setCustomerName('');
-      alert('Order sent to the cook!');
+      setShowNotification(true);
     } catch (e) {
       console.error('Error adding document: ', e);
       alert('An error occurred, please try again later.');
@@ -329,9 +332,16 @@ export default function Waitress() {
             >
               Enviar orden al cocinero
             </button>
+          
           </div>
         )}
       </div>
+      {showNotification && (
+        <Notification
+          message="Order sent to the cook successfully!"
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 }
