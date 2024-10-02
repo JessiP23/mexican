@@ -7,6 +7,7 @@ import Sidebar from "./_components/Sidebar"
 
 export default function Cook() {
   const [orders, setOrders] = useState([])
+  
   const [completedOrders, setCompletedOrders] = useState([]);
 
 
