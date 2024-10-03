@@ -64,7 +64,6 @@ export default function Login() {
       // Authenticate user
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log('User signed in:', user);
   
       // Fetch user role from Firestore
       const userRef = collection(db, 'users');
