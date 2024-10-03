@@ -50,7 +50,7 @@ export default function Cook() {
       setTimeout(() => {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
-      }, 3000);
+      }, 5000);
     }
   };
 
