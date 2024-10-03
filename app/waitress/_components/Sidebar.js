@@ -64,7 +64,6 @@ export default function Sidebar() {
     }
   }
 
-  console.log("Rendering Sidebar component, userName:", userName)
 
   return (
     <>
