@@ -65,7 +65,7 @@ export default function Cook() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex h-full bg-gray-100 dark:bg-gray-900">
       <Sidebar />
       <div className="flex-1 p-4 md:ml-64">
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white md:ml-20">Pedidos entrantes</h1>
