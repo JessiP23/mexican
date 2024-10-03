@@ -171,6 +171,7 @@ const products = [
 
 ];
 
+
 export default function Waitress() {
   const [order, setOrder] = useState([]);
   const [customization, setCustomization] = useState({});
@@ -184,22 +185,16 @@ export default function Waitress() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in
         setUser(user);
       } else {
-        // User is signed out
-        router.push('/'); // Redirect to login page
+        router.push('/');
       }
       setLoading(false);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [router]);
-  
 
-
-  // Function to handle quantity changes
   const handleQuantityChange = (productId, type) => {
     setOrder(prevOrder => {
       const existingItem = prevOrder.find(item => item.id === productId);
@@ -216,15 +211,19 @@ export default function Waitress() {
     });
   };
 
-  // Function to handle customization
   const handleCustomization = (productId, value) => {
     setCustomization(prev => ({ ...prev, [productId]: value }));
   };
 
-  // Calculate total price of the order
-  const totalPrice = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const calculateTotalPrice = () => {
+    return order.reduce((sum, item) => {
+      const product = products.find(p => p.id === item.id);
+      return sum + (product ? product.price * item.quantity : 0);
+    }, 0);
+  };
 
-  // Function to send order to Firebase
+  const totalPrice = calculateTotalPrice();
+
   const sendOrder = async () => {
     if (!customerName) {
       alert('Please enter customer name');
@@ -232,12 +231,15 @@ export default function Waitress() {
     }
     try {
       await addDoc(collection(db, 'orders'), {
-        items: order.map(item => ({
-          product: item.name,
-          customization: customization[item.id] || '',
-          quantity: item.quantity,
-          price: item.price * item.quantity,
-        })),
+        items: order.map(item => {
+          const product = products.find(p => p.id === item.id);
+          return {
+            product: item.name,
+            customization: customization[item.id] || '',
+            quantity: item.quantity,
+            price: product ? product.price * item.quantity : 0,
+          };
+        }),
         customerName,
         totalPrice,
         status: 'pending',
