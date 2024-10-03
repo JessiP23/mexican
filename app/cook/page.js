@@ -11,6 +11,7 @@ export default function Cook() {
   const prevOrdersLengthRef = useRef(0);
 
   useEffect(() => {
+    // audio
     audioRef.current = new Audio('/sounds/success.mp3');
   }, []);
 
