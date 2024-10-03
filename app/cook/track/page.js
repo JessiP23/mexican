@@ -94,11 +94,23 @@ export default function Track() {
       try {
         const q = query(collection(db, 'expenses'), orderBy('date', 'desc'));
         const querySnapshot = await getDocs(q);
-        const fetchedExpenses = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id,
-          date: doc.data().date.toDate().toLocaleDateString('en-US')
-        }));
+        const fetchedExpenses = querySnapshot.docs.map(doc => {
+          const date = doc.data().date.toDate();
+          return {
+            ...doc.data(),
+            id: doc.id,
+            date: date.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+              timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Use the local time zone
+            })
+          };
+        });
         setExpenseData(fetchedExpenses);
       } catch (error) {
         console.error('Error fetching expenses: ', error);
@@ -146,11 +158,21 @@ export default function Track() {
     });
 
     // Update local state to display in table
-    setExpenseData([...expenseData, {
+    const newExpense = {
       reason,
       expenses: expensesNum,
-      date: new Date().toLocaleDateString()
-    }]);
+      date: new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      })
+    };
+    setExpenseData([newExpense, ...expenseData]);
 
     // Reset form fields
     setExpenses('');
