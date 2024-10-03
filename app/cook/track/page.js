@@ -18,6 +18,7 @@ export default function Track() {
   const [dailyRevenue, setDailyRevenue] = useState([])
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [user, setUser] = useState(null);
 
 
   useEffect(() => {
