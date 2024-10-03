@@ -44,7 +44,6 @@ export default function Sidebar() {
           console.error("Error fetching user document:", error)
         }
       } else {
-        console.log("User is not authenticated, redirecting to home")
         router.push('/')
       }
     })
