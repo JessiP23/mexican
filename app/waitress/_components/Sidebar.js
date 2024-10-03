@@ -33,7 +33,6 @@ export default function Sidebar() {
             const userDoc = querySnapshot.docs[0]
             const userData = userDoc.data()
             if (userData.name) {
-              console.log("Setting userName:", userData.name)
               setUserName(userData.name)
             } else {
               console.log("Name field not found in user document")
