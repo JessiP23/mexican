@@ -15,8 +15,26 @@ export default function Track() {
   const [todayRevenue, setTodayRevenue] = useState(0)
   const [dailyRevenue, setDailyRevenue] = useState([])
 
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setUser(user);
+      } else {
+        // User is signed out
+        router.push('/'); // Redirect to login page
+      }
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [router]);
+
   useEffect(() => {
     // Fetch and aggregate daily revenue data
+    
     const fetchDailyRevenue = async () => {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

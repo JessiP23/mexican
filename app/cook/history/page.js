@@ -1,11 +1,31 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { db } from "@/firebase";
+import { db, auth } from "@/firebase";
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../_components/Sidebar";
+import { useRouter } from "next/navigation";
 export default function History() {
   const [completedOrders, setCompletedOrders] = useState([]);
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setUser(user);
+      } else {
+        // User is signed out
+        router.push('/'); // Redirect to login page
+      }
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [router]);
 
   useEffect(() => {
     const q = query(
