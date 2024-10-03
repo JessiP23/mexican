@@ -10,6 +10,7 @@ export default function History() {
   const [completedOrders, setCompletedOrders] = useState([]);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
