@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from "react";
-import { db } from "@/firebase";
+import { useState, useEffect } from "react";
+import { db, auth } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import Image from "next/image";
 import Notification from "../components/Notification";
@@ -30,7 +30,8 @@ import Tostadas from '../images/tostadas.jpg';
 import Water from '../images/water.jpg';
 
 import Sidebar from "./_components/Sidebar";
-
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
 
 //customize with product images
 // Initial product data
@@ -176,6 +177,26 @@ export default function Waitress() {
   const [isCustomizing, setIsCustomizing] = useState(null);
   const [customerName, setCustomerName] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setUser(user);
+      } else {
+        // User is signed out
+        router.push('/'); // Redirect to login page
+      }
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [router]);
+  
 
 
   // Function to handle quantity changes
