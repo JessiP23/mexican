@@ -32,7 +32,6 @@ export default function Sidebar() {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0]
             const userData = userDoc.data()
-            console.log("User document data:", userData)
             if (userData.name) {
               console.log("Setting userName:", userData.name)
               setUserName(userData.name)
