@@ -117,6 +117,32 @@ export default function Track() {
       }
     }
   
+    const fetchTodayRevenue = () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayTimestamp = Timestamp.fromDate(today);
+      
+      const ordersQuery = query(
+        collection(db, 'orders'),
+        where('createdAt', '>=', todayTimestamp),
+        where('status', '==', 'completed'),
+        orderBy('createdAt', 'desc')
+      );
+
+      const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+        let dailyRevenue = 0;
+        snapshot.forEach((doc) => {
+          const orderData = doc.data();
+          dailyRevenue += orderData.totalPrice;
+        });
+        console.log('Today\'s revenue updated:', dailyRevenue); // For debugging
+        setTodayRevenue(dailyRevenue);
+      }, (error) => {
+        console.error("Error fetching today's revenue: ", error);
+      });
+
+      return unsubscribe;
+    };
     // Listen for new orders to update today's revenue
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -140,9 +166,15 @@ export default function Track() {
     fetchFinancialData();
     fetchDailyRevenue();
     fetchExpenses();
+
+    const unsubscribeTodayRevenue = fetchTodayRevenue();
   
     // Clean up the listener on component unmount
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribeTodayRevenue) {
+        unsubscribeTodayRevenue();
+      }
+    };
   }, []);
   
   const handleSubmit = async (e) => {
