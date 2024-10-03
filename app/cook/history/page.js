@@ -6,8 +6,10 @@ import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestor
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../_components/Sidebar";
 import { useRouter } from "next/navigation";
+
 export default function History() {
   const [completedOrders, setCompletedOrders] = useState([]);
+  const [user, setUser] = useState(null);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -16,11 +18,11 @@ export default function History() {
       if (user) {
         // User is signed in
         setUser(user);
+        setLoading(false);
       } else {
         // User is signed out
         router.push('/'); // Redirect to login page
       }
-      setLoading(false);
     });
 
     // Cleanup subscription on unmount
@@ -28,6 +30,8 @@ export default function History() {
   }, [router]);
 
   useEffect(() => {
+    if (!user) return; // Only fetch orders if user is authenticated
+
     const q = query(
       collection(db, 'orders'),
       where('status', '==', 'completed'),
@@ -44,8 +48,15 @@ export default function History() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [user]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return null; // This will prevent the component from rendering anything if there's no user
+  }
   return (
     <div className="flex h-full bg-gray-100 dark:bg-gray-900">
       <Sidebar />
