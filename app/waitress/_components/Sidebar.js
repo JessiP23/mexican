@@ -77,7 +77,7 @@ export default function Sidebar() {
       <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           {userName ? (
-            <div className="mb-6 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg mt-20">
+            <div className="mb-6 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg sm:mt-20">
               <p className="text-lg font-semibold text-blue-800 dark:text-blue-200">Welcome, {userName}</p>
             </div>
           ) : (
