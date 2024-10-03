@@ -22,7 +22,6 @@ export default function Sidebar() {
   const [userName, setUserName] = useState('')
 
   useEffect(() => {
-    console.log("Sidebar component mounted")
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
