@@ -53,9 +53,7 @@ export default function Sidebar() {
     }
   }, [router])
 
-  useEffect(() => {
-    console.log("Current userName state:", userName)
-  }, [userName])
+  
 
   const handleSignOut = async () => {
     try {
