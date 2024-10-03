@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import { db } from "@/firebase"
+import { db, auth } from "@/firebase"
 import { collection, addDoc, query, orderBy, limit, onSnapshot, Timestamp, getDocs, where } from 'firebase/firestore'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import Sidebar from "../_components/Sidebar"
+import { onAuthStateChanged } from "firebase/auth"
+import { useRouter } from "next/navigation"
 
 export default function Track() {
   const [revenue, setRevenue] = useState('')
@@ -14,6 +16,8 @@ export default function Track() {
   const [financialData, setFinancialData] = useState([])
   const [todayRevenue, setTodayRevenue] = useState(0)
   const [dailyRevenue, setDailyRevenue] = useState([])
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
 
   useEffect(() => {
