@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import { db } from "@/firebase"
+import { useRouter } from 'next/navigation'
+import { db, auth } from "@/firebase"
 import { collection, addDoc, query, orderBy, limit, onSnapshot, Timestamp, getDocs } from 'firebase/firestore'
+import { onAuthStateChanged } from "firebase/auth"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import Sidebar from "../_components/Sidebar"
 
@@ -12,65 +14,77 @@ export default function Track() {
   const [financialData, setFinancialData] = useState([])
   const [todayRevenue, setTodayRevenue] = useState(0)
   const [dailyRevenue, setDailyRevenue] = useState([])
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
-    // Fetch financial data
-    const fetchFinancialData = async () => {
-      const q = query(collection(db, 'financials'), orderBy('date', 'desc'), limit(30))
-      const querySnapshot = await getDocs(q)
-      const data = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        date: doc.data().date.toDate().toLocaleDateString()
-      }))
-      setFinancialData(data.reverse())
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, proceed with data fetching
+        setLoading(false)
+        fetchFinancialData()
+        fetchDailyRevenue()
+        listenForNewOrders()
+      } else {
+        // No user is signed in, redirect to home page
+        router.push('/')
+      }
+    })
 
-    fetchFinancialData()
+    return () => unsubscribe()
+  }, [router])
 
-    // Fetch and aggregate daily revenue data
-    const fetchDailyRevenue = async () => {
-      const thirtyDaysAgo = new Date()
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-      
-      const q = query(
-        collection(db, 'orders'),
-        orderBy('createdAt', 'desc'),
-        limit(1000) // Adjust this limit as needed
-      )
+  const fetchFinancialData = async () => {
+    const q = query(collection(db, 'financials'), orderBy('date', 'desc'), limit(30))
+    const querySnapshot = await getDocs(q)
+    const data = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      date: doc.data().date.toDate().toLocaleDateString()
+    }))
+    setFinancialData(data.reverse())
+  }
 
-      const querySnapshot = await getDocs(q)
-      const orderData = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        createdAt: doc.data().createdAt.toDate()
-      }))
+  const fetchDailyRevenue = async () => {
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    
+    const q = query(
+      collection(db, 'orders'),
+      orderBy('createdAt', 'desc'),
+      limit(1000)
+    )
 
-      const dailyTotals = orderData.reduce((acc, order) => {
-        if (order.createdAt >= thirtyDaysAgo) {
-          const dateKey = order.createdAt.toISOString().split('T')[0]
-          acc[dateKey] = (acc[dateKey] || 0) + order.totalPrice
-        }
-        return acc
-      }, {})
+    const querySnapshot = await getDocs(q)
+    const orderData = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      createdAt: doc.data().createdAt.toDate()
+    }))
 
-      const sortedDailyRevenue = Object.entries(dailyTotals)
-        .map(([date, total]) => ({ date, total }))
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
+    const dailyTotals = orderData.reduce((acc, order) => {
+      if (order.createdAt >= thirtyDaysAgo) {
+        const dateKey = order.createdAt.toISOString().split('T')[0]
+        acc[dateKey] = (acc[dateKey] || 0) + order.totalPrice
+      }
+      return acc
+    }, {})
 
-      setDailyRevenue(sortedDailyRevenue)
-    }
+    const sortedDailyRevenue = Object.entries(dailyTotals)
+      .map(([date, total]) => ({ date, total }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
 
-    fetchDailyRevenue()
+    setDailyRevenue(sortedDailyRevenue)
+  }
 
-    // Listen for new orders to update today's revenue
+  const listenForNewOrders = () => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const ordersQuery = query(
       collection(db, 'orders'),
       orderBy('createdAt', 'desc'),
-      limit(100) // Adjust this limit as needed
+      limit(100)
     )
 
-    const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+    return onSnapshot(ordersQuery, (snapshot) => {
       let dailyRevenue = 0
       snapshot.forEach((doc) => {
         const orderData = doc.data()
@@ -80,9 +94,7 @@ export default function Track() {
       })
       setTodayRevenue(dailyRevenue)
     })
-
-    return () => unsubscribe()
-  }, [])
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -106,6 +118,10 @@ export default function Track() {
     // Reset form
     setRevenue('')
     setExpenses('')
+  }
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>
   }
 
   return (
