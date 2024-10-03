@@ -49,7 +49,6 @@ export default function Sidebar() {
     })
 
     return () => {
-      console.log("Sidebar component unmounting")
       unsubscribe()
     }
   }, [router])
