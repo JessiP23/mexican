@@ -160,7 +160,7 @@ export default function Track() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar />
       <div className="flex-1 p-4 md:ml-64 overflow-y-auto">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white ml-16">Seguimiento de las finanzas</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white ml-16 md: text-center sm:text-center">Seguimiento de las finanzas</h1>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Ingresos de hoy</h2>
