@@ -73,7 +73,6 @@ export default function Login() {
       if (querySnapshot.docs.length > 0) {
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
-        console.log('User  data:', userData);
         
         // Redirect based on user role
         switch (userData.role) {
