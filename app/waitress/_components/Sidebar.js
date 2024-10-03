@@ -6,13 +6,13 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Home, ClipboardList, History, User, DollarSign, Menu, LogOut } from 'lucide-react'
 import { auth, db } from '@/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 
 const sidebarItems = [
-  { name: 'Panel', href: '/cook', icon: Home },
-  { name: 'Historial', href: '/cook/history', icon: History },
-  { name: 'Perfil', href: '/cook/profile', icon: User },
-  { name: 'Gastos', href: '/cook/track', icon: DollarSign },
+  { name: 'Panel', href: '/waitress', icon: Home },
+  { name: 'Historial', href: '/waitress/history', icon: History },
+  { name: 'Perfil', href: '/waitress/profile', icon: User },
+  { name: 'Gastos', href: '/waitress/track', icon: DollarSign },
 ]
 
 export default function Sidebar() {
@@ -22,21 +22,46 @@ export default function Sidebar() {
   const [userName, setUserName] = useState('')
 
   useEffect(() => {
+    console.log("Sidebar component mounted")
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // User is signed in
-        const userDoc = await getDoc(doc(db, 'users', user.uid))
-        if (userDoc.exists()) {
-          setUserName(userDoc.data().name)
+        console.log("User is authenticated:", user.uid)
+        try {
+          const usersRef = collection(db, 'users')
+          const q = query(usersRef, where("email", "==", user.email))
+          const querySnapshot = await getDocs(q)
+          
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]
+            const userData = userDoc.data()
+            console.log("User document data:", userData)
+            if (userData.name) {
+              console.log("Setting userName:", userData.name)
+              setUserName(userData.name)
+            } else {
+              console.log("Name field not found in user document")
+            }
+          } else {
+            console.log("User document does not exist for email:", user.email)
+          }
+        } catch (error) {
+          console.error("Error fetching user document:", error)
         }
       } else {
-        // User is signed out
+        console.log("User is not authenticated, redirecting to home")
         router.push('/')
       }
     })
 
-    return () => unsubscribe()
+    return () => {
+      console.log("Sidebar component unmounting")
+      unsubscribe()
+    }
   }, [router])
+
+  useEffect(() => {
+    console.log("Current userName state:", userName)
+  }, [userName])
 
   const handleSignOut = async () => {
     try {
@@ -46,6 +71,8 @@ export default function Sidebar() {
       console.error('Error signing out: ', error)
     }
   }
+
+  console.log("Rendering Sidebar component, userName:", userName)
 
   return (
     <>
@@ -58,9 +85,13 @@ export default function Sidebar() {
       </button>
       <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-          {userName && (
+          {userName ? (
             <div className="mb-6 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg">
               <p className="text-lg font-semibold text-blue-800 dark:text-blue-200">Welcome, {userName}</p>
+            </div>
+          ) : (
+            <div className="mb-6 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg">
+              <p className="text-lg font-semibold text-blue-800 dark:text-blue-200">Loading user...</p>
             </div>
           )}
           <ul className="space-y-4 font-medium">
