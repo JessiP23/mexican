@@ -35,10 +35,10 @@ export default function Sidebar() {
             if (userData.name) {
               setUserName(userData.name)
             } else {
-              console.log("Name field not found in user document")
+              console.log("NNN")
             }
           } else {
-            console.log("User document does not exist for email:", user.email)
+            console.log("NNN:")
           }
         } catch (error) {
           console.error("Error fetching user document:", error)
