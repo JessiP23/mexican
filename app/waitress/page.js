@@ -259,7 +259,7 @@ export default function Waitress() {
       {/* sidebar */}
       <Sidebar />
       <div className="lg:ml-64">
-      <h1 className="text-2xl font-bold mb-4">Tomar orden</h1>
+      <h1 className="text-2xl font-bold mb-4 md: text-center sm:text-center">Tomar orden</h1>
 
       <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => {
