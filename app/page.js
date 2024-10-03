@@ -58,7 +58,6 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    console.log('Attempting to log in...');
   
     try {
       // Authenticate user
