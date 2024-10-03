@@ -16,6 +16,7 @@ export default function History() {
       if (user) {
         // User is signed in
         setUser(user);
+        
       } else {
         // User is signed out
         router.push('/'); // Redirect to login page
