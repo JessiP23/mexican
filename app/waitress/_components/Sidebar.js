@@ -25,7 +25,6 @@ export default function Sidebar() {
     console.log("Sidebar component mounted")
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("User is authenticated:", user.uid)
         try {
           const usersRef = collection(db, 'users')
           const q = query(usersRef, where("email", "==", user.email))
