@@ -365,9 +365,9 @@ export default function Waitress() {
                   type="radio"
                   className="form-radio"
                   name="orderType"
-                  value="paraAqui"
-                  checked={orderType === 'paraAqui'}
-                  onChange={() => setOrderType('paraAqui')}
+                  value="para-aqui"
+                  checked={orderType === 'para-aqui'}
+                  onChange={() => setOrderType('para-aqui')}
                 />
                 <span className="ml-2">Para aquí</span>
               </label>
@@ -376,9 +376,9 @@ export default function Waitress() {
                   type="radio"
                   className="form-radio"
                   name="orderType"
-                  value="paraLlevar"
-                  checked={orderType === 'paraLlevar'}
-                  onChange={() => setOrderType('paraLlevar')}
+                  value="para-llevar"
+                  checked={orderType === 'para-llevar'}
+                  onChange={() => setOrderType('para-llevar')}
                 />
                 <span className="ml-2">Para llevar</span>
               </label>
