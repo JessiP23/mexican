@@ -78,6 +78,7 @@ export default function Cook() {
                 <h2 className="text-xl font-semibold">Orden #{order.id.slice(-4)}</h2>
                 <p className="text-sm">Modo: {order.status}</p>
                 <h1>Cliente: {order.customerName}</h1>
+                <h1>Modo: {order.orderType}</h1>
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2 text-blue-900">Articulos:</h3>
