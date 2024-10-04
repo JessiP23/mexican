@@ -340,7 +340,7 @@ export default function Waitress() {
             Total: ${totalPrice.toFixed(2)}
           </div>
           <div className="mb-4">
-              <label className="block text-gray-700 dark:text-gray-300">Customer Name</label>
+              <label className="block text-gray-700 dark:text-gray-300">Nombre del cliente</label>
               <input
                 type="text"
                 value={customerName}
