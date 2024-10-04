@@ -67,7 +67,7 @@ export default function History() {
                 <ul className="space-y-4">
                   {order.items.map((item, index) => (
                     <li key={index} className="border-b pb-2 text-blue-950">
-                      {item.product} - {item.quantity} -  {item.customization || []}
+                      {item.product} - {item.quantity} -  {item.customization || "No personalizado"}
                     </li>
                   ))}
                 </ul>
