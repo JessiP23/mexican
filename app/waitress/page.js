@@ -181,6 +181,7 @@ export default function Waitress() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [orderType, setOrderType] = useState(''); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -225,8 +226,12 @@ export default function Waitress() {
   const totalPrice = calculateTotalPrice();
 
   const sendOrder = async () => {
-    if (!customerName) {
+    if (!customerName.trim()) {
       alert('Please enter customer name');
+      return;
+    }
+    if (!orderType) {
+      alert('Please select order type (For Here or For Delivery)');
       return;
     }
     try {
@@ -240,15 +245,18 @@ export default function Waitress() {
             price: product ? product.price * item.quantity : 0,
           };
         }),
-        customerName,
+        customerName: customerName.trim(),
         totalPrice,
         status: 'pending',
+        orderType, // Add order type to Firebase collection
         createdAt: serverTimestamp(),
       });
+      // Reset states after successful order
       setOrder([]);
       setCustomization({});
       setIsCustomizing(null);
       setCustomerName('');
+      setOrderType('');
       setShowNotification(true);
     } catch (e) {
       console.error('Error adding document: ', e);
@@ -349,6 +357,33 @@ export default function Waitress() {
                 placeholder="Enter customer name"
               />
             </div>
+            <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300 mb-2">Tipo de orden</label>
+            <div className="flex space-x-4">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  className="form-radio"
+                  name="orderType"
+                  value="paraAqui"
+                  checked={orderType === 'paraAqui'}
+                  onChange={() => setOrderType('paraAqui')}
+                />
+                <span className="ml-2">Para aquí</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  className="form-radio"
+                  name="orderType"
+                  value="paraLlevar"
+                  checked={orderType === 'paraLlevar'}
+                  onChange={() => setOrderType('paraLlevar')}
+                />
+                <span className="ml-2">Para llevar</span>
+              </label>
+            </div>
+          </div>
             <button
               onClick={sendOrder}
               className="w-full bg-yellow-500 text-white py-2 mt-4 rounded"
