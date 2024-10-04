@@ -61,6 +61,7 @@ export default function History() {
                 {/* <p className="text-sm">Estado: {order.status}</p> */}
                 <p className="text-sm">{new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
                 <h1>Cliente: {order.customerName}</h1>
+                <h1>Precio Total: $ {order.totalPrice}</h1>
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2 text-blue-900">Articulos:</h3>
