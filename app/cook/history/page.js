@@ -3,26 +3,26 @@
 import { useState, useEffect } from "react";
 import { db, auth } from "@/firebase";
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
-import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../_components/Sidebar";
 import { useRouter } from "next/navigation";
-
+import { onAuthStateChanged } from "firebase/auth";
 export default function History() {
   const [completedOrders, setCompletedOrders] = useState([]);
-  const [user, setUser] = useState(null);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in
         setUser(user);
-        setLoading(false);
+        
       } else {
         // User is signed out
         router.push('/'); // Redirect to login page
       }
+      setLoading(false);
     });
 
     // Cleanup subscription on unmount
@@ -30,8 +30,6 @@ export default function History() {
   }, [router]);
 
   useEffect(() => {
-    if (!user) return; // Only fetch orders if user is authenticated
-
     const q = query(
       collection(db, 'orders'),
       where('status', '==', 'completed'),
@@ -48,15 +46,8 @@ export default function History() {
     return () => {
       unsubscribe();
     };
-  }, [user]);
+  }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return null; // This will prevent the component from rendering anything if there's no user
-  }
   return (
     <div className="flex h-full bg-gray-100 dark:bg-gray-900">
       <Sidebar />
@@ -67,16 +58,17 @@ export default function History() {
             <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="bg-blue-600 text-white p-4">
                 <h2 className="text-xl font-semibold">Orden #{order.id.slice(-4)}</h2>
-                <p className="text-sm">Estado: {order.status}</p>
+                <h1 className="text-xl font-semibold">Cliente: {order.customerName}</h1>
+                {/* <p className="text-sm">Estado: {order.status}</p> */}
                 <p className="text-sm">{new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
-                <h1>Cliente: {order.customerName}</h1>
+                <h1>Precio Total: $ {order.totalPrice}</h1>
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2 text-blue-900">Articulos:</h3>
                 <ul className="space-y-4">
                   {order.items.map((item, index) => (
                     <li key={index} className="border-b pb-2 text-blue-950">
-                      {item.product} - {item.quantity}
+                      {item.product} - {item.quantity} -  {item.customization || "No personalizado"}
                     </li>
                   ))}
                 </ul>
